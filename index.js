@@ -45,6 +45,32 @@ async function run() {
       const result = await invoiceCollection.deleteOne(filter);
       res.send(result);
     });
+
+    // create api for single invoice
+    app.get("/invoices/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const result = await invoiceCollection.findOne(filter);
+      res.send(result);
+    });
+
+    // create api for update invoice
+    app.patch("/invoices/:id", async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const filter = { _id: ObjectId(id) };
+      const invoice = req.body;
+      const updateDoc = {
+        $set: {
+          customer: invoice.customer,
+          payableAmount: invoice.payableAmount,
+          paidAmount: invoice.paidAmount,
+          dueAmount: invoice.dueAmount,
+        },
+      };
+      const result = await invoiceCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
   } finally {
   }
 }
