@@ -29,6 +29,12 @@ async function run() {
       const invoices = await cursor.toArray();
       res.send(invoices);
     });
+
+    app.post("/invoice", async (req, res) => {
+      const invoice = req.body;
+      const result = await invoiceCollection.insertOne(invoice);
+      res.send(result);
+    });
   } finally {
   }
 }
