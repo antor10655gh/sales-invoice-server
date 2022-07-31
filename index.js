@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -23,6 +23,7 @@ async function run() {
       .db("sales_invoices")
       .collection("invoices");
 
+    // create api for load all invoice
     app.get("/invoices", async (req, res) => {
       const query = {};
       const cursor = invoiceCollection.find(query);
@@ -30,9 +31,18 @@ async function run() {
       res.send(invoices);
     });
 
+    // create api for add new invoice
     app.post("/invoice", async (req, res) => {
       const invoice = req.body;
       const result = await invoiceCollection.insertOne(invoice);
+      res.send(result);
+    });
+
+    // create api for delete invoice
+    app.delete("/invoices/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) };
+      const result = await invoiceCollection.deleteOne(filter);
       res.send(result);
     });
   } finally {
