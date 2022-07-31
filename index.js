@@ -19,7 +19,16 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
-    console.log("Database Connected");
+    const invoiceCollection = client
+      .db("sales_invoices")
+      .collection("invoices");
+
+    app.get("/invoices", async (req, res) => {
+      const query = {};
+      const cursor = invoiceCollection.find(query);
+      const invoices = await cursor.toArray();
+      res.send(invoices);
+    });
   } finally {
   }
 }
